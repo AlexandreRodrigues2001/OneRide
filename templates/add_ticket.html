@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Produto{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('cart') }}">Carrinho</a></li>
+                    <li><a href="{{ url_for('profile') }}">Perfil</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li style="margin-right: 40px;"><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <h1 class="titulo-tickets">Descreva o seu Problema ou Questão</h1>
+    <div class="tickets">
+        <form method="post" action="{{ url_for('add_ticket') }}" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="ticket-image" id="dropArea-ticket" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="document.getElementById('fileInput').click();">
+                <div id="dropMessage-ticket">
+                    <p>Arraste uma foto do seu problema para aqui!</p>
+                    <h2><i class="fa fa-camera"></i></h2>
+                </div>
+                <img id="previewImage-ticket" src="" alt="Product Picture">
+            </div>
+            <input type="file" id="fileInput" name="foto" accept="image/*" style="display: none;" onchange="handleFileInput(this.files)">
+            
+            <div class="ticket-email">
+                <h2>Email: </h2>
+                <input class="input-email-ticket" type="text" name="email" value="{{form.email.data}}">    
+            </div> 
+                                             
+            <div class="ticket-assunto">
+                <h2>Assunto: </h2>
+                <input class="input-assunto-ticket" type="text" name="assunto" placeholder="Assunto / titulo para o ticket..">    
+            </div>  
+            
+            <h2 class="descricao">Descrição:</h2>
+            <textarea class="textarea-assunto-ticket" name="descricao" id="descricao" placeholder="Escreva Aqui o que o levou a criar um ticket.."></textarea>
+            <button type="submit" class="alterar-produto">Adicionar Ticket</button>
+        </form>
+    </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+    <script>
+        //poder arrastar uma imagem do desktop para a zona indicada
+        function handleFileInput(files) {
+            var file = files[0];
+            if (file) {
+                previewFile(file);
+            }
+        }
+
+        // trata de arrastar a imagem 
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+            document.getElementById('dropMessage-ticket').style.display = 'none';
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+
+            var file = event.dataTransfer.files[0];
+
+            if (file) {
+                previewFile(file);
+                document.getElementById('fileInput').files = event.dataTransfer.files;
+            }
+        }
+        // Preview da imagem
+        function previewFile(file) {
+            var preview = document.getElementById('previewImage-ticket');
+
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        }
+        //Costumização da textarea das especificações
+        var textarea = document.getElementById('descricao');
+    
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    </script>
+{% endblock %}

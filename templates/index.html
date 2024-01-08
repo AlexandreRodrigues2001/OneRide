@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Minha Loja Online{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="#">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('cart') }}">Carrinho</a></li>
+                    <li><a href="{{ url_for('profile') }}">Perfil</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li style="margin-right: 40px;"><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <form action="{{ url_for('search') }}" method="get" class="search-form">
+        <div class="search-bar">
+            <input type="text" name="query" class="search-input" placeholder="Pesquisar...">
+            <button class="search-button" type="submit" ><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <main>
+        
+        <section class="destaques">
+            {% for product in products %}
+                <div class="produto">
+                    <a href="{{ url_for('product_single', product_id=product.prod_id) }}" style="text-decoration: none;">
+                        <img src="{{ url_for('static', filename='imagens/' ~ product.photo) }}" alt="{{ product.nome }}">
+                    </a>
+
+                    <div class="info">
+                        <h3 class="product-title-nome">{{ product.nome }}</h3>
+                        <h3 class="product-title-value">{{ product.valor }}€</h3>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </section>
+    </main>
+    {% if 'user_id' in session %}
+        <div class="support-button"onclick="window.location.href='{{ url_for('add_ticket') }}'"></div>
+    {% else %}
+        <div class="admin-button">
+            <a href="{{ url_for('admin_login') }}"><i class="fas fa-cog"></i></a>
+        </div>
+    {% endif %}    
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}

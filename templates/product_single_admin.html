@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Produto: {{ product.nome }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index_admin') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                {% if 'admin_id' in session %}
+                    <li style="margin-right: 40px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class="product-single">
+        <form method="post" action="{{ url_for('edit_product_admin', product_id=product.prod_id) }}" enctype="multipart/form-data">
+            <div class="product-container_product-single">  
+                <div class="product-image_product-single" onclick="document.getElementById('fileInput').click();">
+                    <img id="previewImage" src="{{ url_for('static', filename='imagens/' ~ product.photo) }}" alt="Product Picture">
+                </div>
+                <input type="file" id="fileInput" name="Foto" accept="image/*" style="display: none;" onchange="previewFile()">
+                <div class="product-details">
+                    <input class="input-titulo" type="text" name="nome" value="{{ product.nome }}">               
+                    <div class="specifications">
+                        <h3>Especificações:</h3>
+                        <div class="input-container">
+                            
+                            <input type="text" class="input-value" name="valor" id="valor" value="{{ product.valor }}">
+                            <p>€</p>
+                        </div>
+                        
+                        <textarea class="textarea-especificacoes_descricao" name="especificacoes" id="especificacoes">{{ product.especificacoes|safe }}</textarea>
+                    </div>
+                    <div class="description">
+                        <h3>Descrição:</h3>
+                        <textarea class="textarea-especificacoes_descricao" name="descricao" id="descricao">{{ product.descricao|safe }}</textarea>
+                    </div>
+                    <button type="submit" class="alterar-produto">Gravar Alterações</button>
+                </div>
+            </div>
+        </form>        
+    </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+    <script>
+        //Preview da imagem
+        function previewFile() {
+            var preview = document.getElementById('previewImage');
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+    
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+    
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "{{ url_for('static', filename='imagens/user.jpg') }}";
+            }
+        }
+        //--------------------------
+
+        // Obtém a largura do valor e ajusta o width do input
+        var input = document.getElementById('valor');
+        input.style.width = (input.value.length * 20) + 'px';
+
+        // Adiciona um ouvinte de evento de entrada para ajustar dinamicamente a largura
+        input.addEventListener('input', function () {
+            this.style.width = (this.value.length * 20) + 'px';
+        });
+        //Costumização da textarea das especificações
+        var textarea = document.getElementById('especificacoes');
+        var initialValue = `{{ product.especificacoes|safe }}`;
+    
+        var parser = new DOMParser();
+        var decodedValue = parser.parseFromString(initialValue, 'text/html').body.textContent;
+        textarea.value = decodedValue;
+    
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+        //--------------------------
+        //Costumização da textarea das descrição
+        var textarea2 = document.getElementById('descricao');
+        var initialValue = `{{ product.descricao|safe }}`;
+    
+        var parser = new DOMParser();
+        var decodedValue = parser.parseFromString(initialValue, 'text/html').body.textContent;
+        textarea2.value = decodedValue;
+    
+        textarea2.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    
+        textarea2.style.height = (textarea2.scrollHeight) + 'px';
+    </script>
+{% endblock %}

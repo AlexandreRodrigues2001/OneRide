@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Produto{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index_admin') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                {% if 'admin_id' in session %}
+                    <li style="margin-right: 40px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class="product-single">
+        <div class="titulo-add-product">
+            <h1>Adicionar Produto</h1>
+        </div>
+        <form method="post" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="product-container_product-single">  
+                <div class="product-image_product-single" id="dropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="document.getElementById('fileInput').click();">
+                    <div id="dropMessage">
+                        <p>Arraste uma foto do artigo para aqui!</p>
+                        <h2><i class="fa fa-camera"></i></h2>
+                    </div>
+                    <img id="previewImage" src="" alt="Product Picture">
+                </div>
+                <input type="file" id="fileInput" name="foto" accept="image/*" style="display: none;" onchange="handleFileInput(this.files)">
+                <div class="product-details">
+                    <input class="input-titulo" type="text" name="nome" placeholder="Titulo do produto">               
+                    <div class="specifications">
+                        <h3>Especificações:</h3>
+                        <div class="input-container">
+                            <input type="text" class="input-value" name="valor" id="valor" placeholder="999">
+                            <p>€</p>
+                        </div>
+                        
+                        <textarea class="textarea-especificacoes_descricao" name="especificacoes" id="especificacoes" placeholder="Especificações do Produto"></textarea>
+                    </div>
+                    <div class="description">
+                        <h3>Descrição:</h3>
+                        <textarea class="textarea-especificacoes_descricao" name="descricao" id="descricao" placeholder="Descrição do Produto"></textarea>
+                    </div>
+                    <button type="submit" class="alterar-produto">Adicionar Produto</button>
+                </div>
+            </div>
+        </form>        
+    </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+    <script>
+        //poder arrastar uma imagem do desktop para a zona indicada
+        function handleFileInput(files) {
+            var file = files[0];
+            if (file) {
+                previewFile(file);
+            }
+        }
+
+        // trata de arrastar a imagem 
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+            document.getElementById('dropMessage').style.display = 'none';
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+
+            var file = event.dataTransfer.files[0];
+
+            if (file) {
+                previewFile(file);
+                document.getElementById('fileInput').files = event.dataTransfer.files;
+            }
+        }
+        // Preview da imagem
+        function previewFile(file) {
+            var preview = document.getElementById('previewImage');
+
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        }
+        //--------------------------
+        //Costumização da textarea das especificações
+        var textarea = document.getElementById('especificacoes');
+    
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+        //--------------------------
+        //Costumização da textarea das descrição
+        var textarea2 = document.getElementById('descricao');
+    
+        textarea2.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    
+        textarea2.style.height = (textarea2.scrollHeight) + 'px';
+    </script>
+{% endblock %}

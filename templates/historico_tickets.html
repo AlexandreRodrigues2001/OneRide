@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index_admin') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li style="margin-right: 40px;"><a href="{{ url_for('logout_admin') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1 class="titulo-tickets">Histórico de Tickets Tratados</h1>
+    <div class="lista-tickets">
+        {% if tickets %}
+            <form id="ticket-form" method="GET" action="{{ url_for('list_tickets') }}">
+                <div class="search-bar-ticket">
+                    <input type="text" name="query" class="search-input" placeholder="Pesquisar por email...">
+                    <button class="search-button" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+                <select name="order_by" id="order-select" class="order-select">
+                    <option value="" disabled selected>Ordenar por data</option>
+                    <option value="asc">Data Ascendente</option>
+                    <option value="desc">Data Descendente</option>
+                </select>
+            </form>
+            <span class="ticket-item-email-label"><strong>Email</strong></span>
+            <span class="ticket-item-assunto-label"><strong>Assunto</strong></span>
+            <span class="ticket-item-data-label"><strong>Criado</strong></span>
+            <div class="espacamento">
+                {% for ticket in tickets %}
+                    <div class="ticket-item" onclick="window.location.href='{{ url_for('ticket_single', ticket_id=ticket.id_ticket) }}'; return false;">
+                        <span class="ticket-item-email">{{ ticket.email_user }}</span>
+                        <span class="ticket-item-assunto">{{ ticket.assunto }}</span>
+                        <span class="ticket-item-data">{{ ticket.data_hora }}</span>
+                        <span class="ticket-item-simbolo"><strong>></strong></span>
+                    </div>
+                {% endfor %}
+        {% else %}
+            <img class="imagem-sem-tickets" src="{{ url_for('static', filename='imagens/historico.png') }}" alt="Imagem Padrão">
+        {% endif %}
+            </div>
+    </div>
+        <div class="admin-button">
+            <a href="{{ url_for('list_tickets') }}"><i class="fas fa-clipboard-list"></i></a>
+        </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+    <script>
+        $(document).ready(function() {
+            $('#order-select').change(function() {
+                $('#ticket-form').submit();
+            });
+        });
+    </script>
+{% endblock %}

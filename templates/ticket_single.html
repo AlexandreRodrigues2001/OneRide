@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %} Ticket {% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index_admin') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li style="margin-right: 40px;"><a href="{{ url_for('logout_admin') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <h1 class="titulo-tickets">Ticket número: {{ ticket.id_ticket }}</h1>
+    <div class="tickets-single">
+        <div class="ticket-image">
+            <img id="ticket-image" src="{{ url_for('static', filename='imagens/' ~ ticket.foto) }}" alt="Ticket Picture">
+        </div>
+        
+        <div class="ticket-details">
+            <div class="ticket-detail">
+                <h2>Email:</h2>
+                <p>{{ ticket.email_user }}</p>
+            </div>
+            
+            <div class="ticket-detail">
+                <h2>Assunto:</h2>
+                <p>{{ ticket.assunto }}</p>
+            </div>
+            
+            <div class="ticket-detail">
+                <div class="ticket-detail-descricao">
+                    <h2>Descrição:</h2>
+                    <p>{{ ticket.descricao|safe }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% if not ticket.tratado %}
+            <form method="post" action="{{ url_for('resolve_ticket', ticket_id=ticket.id_ticket) }}">
+                <button type="submit" class="button-ticket">Marcar como Resolvido<i class='fas fa-check-circle'></i></button>
+            </form>
+        {% else %}
+            <form method="post" action="{{ url_for('unresolve_ticket', ticket_id=ticket.id_ticket) }}">
+                <button type="submit" class="button-ticket">Marcar como não Resolvido<i class='fas fa-times-circle'></i></button>
+            </form>
+        {% endif %}
+    </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+    <script>
+        $(document).ready(function () {
+            $('#ticket-image').on('click', function () {
+                if (!document.fullscreenElement) {
+                    var elem = document.getElementById('ticket-image');
+                    elem.requestFullscreen().catch(err => {
+                        console.error(`Erro ao tentar entrar em modo de tela cheia: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        });
+    </script>
+{% endblock %}

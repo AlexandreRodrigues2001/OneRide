@@ -1,0 +1,37 @@
+<html>
+    <head>
+        {% block head %}
+            <title>{% block title %}{% endblock %}</title>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            {% block footer %}
+                <footer>
+                    <p>&copy; 2023 Minha Loja Online. Todos os direitos reservados.</p>
+                    <ul class="wrapper">
+                        <li class="icon facebook">
+                          <span class="tooltip">Facebook</span>
+                          <span><i class="fab fa-facebook-f"></i></span>
+                        </li>
+                        <li class="icon instagram">
+                          <span class="tooltip">Instagram</span>
+                          <span><i class="fab fa-instagram"></i></span>
+                        </li>
+                        <li class="icon github">
+                          <span class="tooltip">Github</span>
+                          <span><i class="fab fa-github"></i></span>
+                        </li>
+                    </ul>
+                </footer>
+            {% endblock %}
+        {% endblock %}
+    </body>
+</html>

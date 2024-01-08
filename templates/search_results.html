@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Minha pesquisa{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <ul>
+                    {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('cart') }}">Carrinho</a></li>
+                        <li><a href="{{ url_for('profile') }}">Perfil</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li style="margin-right: 40px;"><a href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </ul>
+        </nav>
+    </header>
+    <form action="{{ url_for('search') }}" method="get" class="search-form">
+        <div class="search-bar">
+            <input type="text" name="query" class="search-input" placeholder="Pesquisar...">
+            <button class="search-button" type="submit" ><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <main>
+        <section class="destaques">
+            {% for product in products %}
+                <div class="produto">
+                    <a href="{{ url_for('product_single', product_id=product.prod_id) }}" style="text-decoration: none;">
+                        <img src="{{ url_for('static', filename='imagens/' ~ product.photo) }}" alt="{{ product.nome }}">
+
+                        <div class="info">
+                            <h3 class="product-title-value">{{ product.nome }}</h3>
+                            <h3 class="product-title-value">{{ product.valor }}€</h3>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script>
+        function previewFile() {
+            var preview = document.getElementById('previewImage');
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+    
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+    
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "{{ url_for('static', filename='imagens/user.jpg') }}";
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('cart') }}">Carrinho</a></li>
+                    <li style="margin-right: 10px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <div class="profile-container">
+        <form method="post" action="{{ url_for('update_profile') }}"enctype="multipart/form-data">
+            <ul class="form-list ">
+                <li>
+                    <div class="profile-image" onclick="document.getElementById('fileInput').click();">
+                        <img id="previewImage" src="{{ url_for('static', filename='imagens/' + user.profile_image) }}" alt="User's Profile Picture">
+                    </div>
+                    <input type="file" id="fileInput" name="profile_image" accept="image/*" style="display: none;" onchange="previewFile()">
+                </li>
+                <li>
+                    <div class="profile-info">
+                        <div class="profile-info-content">
+                            <h2>Perfil</h2>
+                            <ul class="input-list">
+                                <li>
+                                    <p><strong>Nome:</strong></p>
+                                </li>
+                                <li>
+                                    {% if user.name is none %}
+                                        <input type="text" name="name" class="input-p" placeholder="Nome.. (ex: Rui)">
+                                    {% else %}
+                                        <input type="text" name="name" class="input-p" placeholder="{{user.name}}">
+                                    {% endif %}
+                                </li>
+                            </ul>
+                            <ul class="input-list">
+                                <li>
+                                    <p><strong>Email:</strong></p>
+                                </li>
+                                <li>
+                                    <input type="text" name="email" class="input-p" placeholder="{{user.email}}">
+                                </li>
+                            </ul>
+                            <div class="address">
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Localidade:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.localidade is none %}
+                                            <input type="text" name="localidade" class="input-p" placeholder="Localidade.. (ex: Lisboa)">
+                                        {% else %}
+                                            <input type="text" name="localidade" class="input-p" placeholder="{{user.localidade}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Rua:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.rua is none %}
+                                            <input type="text" name="rua" class="input-p" placeholder="Rua.. (ex: Avanida da Liberdade)">
+                                        {% else %}
+                                            <input type="text" name="rua" class="input-p" placeholder="{{user.rua}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Numero da Porta:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.numero_porta is none %}
+                                        <input type="text" name="numero_porta" class="input-p" placeholder="Nº da Porta.. (ex: 27B)">
+                                    {% else %}
+                                        <input type="text" name="numero_porta" class="input-p" placeholder="{{user.numero_porta}}">
+                                    {% endif %}
+                                    </li>
+                                </ul>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Código Postal:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.codigo_postal is none %}
+                                            <input type="text" name="codigo_postal" class="input-p" placeholder="Cod Postal.. (ex: 1234-123)">
+                                        {% else %}
+                                            <input type="text" name="codigo_postal" class="input-p" placeholder="{{user.codigo_postal}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bank-details">
+                                <h2>Dados Bancários</h2>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Número do Cartão:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.numero_cartao is none %}
+                                            <input type="text" name="numero_cartao" class="input-p" placeholder="Nº do Cartão.. (ex: 1234 1234 1234 1234)">
+                                        {% else %}
+                                            <input type="text" name="numero_cartao" class="input-p" placeholder="{{user.numero_cartao}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>Validade Do cartão:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.validade is none %}
+                                            <input type="text" name="validade" class="input-p" placeholder="Val do Cartão.. (ex: MM/AA)">
+                                        {% else %}
+                                            <input type="text" name="validade" class="input-p" placeholder="{{user.validade}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                                <ul class="input-list">
+                                    <li>
+                                        <p><strong>CVV:</strong></p>
+                                    </li>
+                                    <li>
+                                        {% if user.cvv is none %}
+                                            <input type="text" name="cvv" class="input-p" placeholder="Nº de segurança.. (ex: 123)">
+                                        {% else %}
+                                            <input type="text" name="cvv" class="input-p" placeholder="{{user.cvv}}">
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <button type="submit" class="edit-profile-button">Gravar Perfil</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}

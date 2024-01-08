@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Minha pesquisa{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index_admin') }}">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li style="margin-right: 20px;"><a href="{{ url_for('logout_admin') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <form action="{{ url_for('search') }}" method="get" class="search-form">
+        <div class="search-bar">
+            <input type="text" name="query" class="search-input" placeholder="Pesquisar...">
+            <button class="search-button" type="submit" ><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <main>
+        <section class="destaques">
+            {% for product in products %}
+                <div class="produto">
+                    <a href="{{ url_for('product_single', product_id=product.prod_id) }}" style="text-decoration: none;">
+                        <img src="{{ url_for('static', filename='imagens/' ~ product.photo) }}" alt="{{ product.nome }}">
+
+                        <div class="info">
+                            <h3 class="product-title-value">{{ product.nome }}</h3>
+                            <h3 class="product-title-value">{{ product.valor }}€</h3>
+                            <h3 class="product-title-value">
+                                <form action="{{ url_for('delete_product_admin', product_id=product.prod_id) }}" method="post">
+                                    <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este produto?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </h3>       
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}

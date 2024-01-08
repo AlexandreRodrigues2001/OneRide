@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Pagina não Encontrada{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block body %}
+<header>
+    <div class="logo">
+        <a href="#">
+            <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo">
+        </a>
+    </div>
+    <nav>
+        <ul>
+            <li class="nav-dropdown">
+                <a>Categorias<i class=""></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="#">Categoria 1</a>
+                    <a href="#">Categoria 2</a>
+                    <a href="#">Categoria 3</a>
+                </div>
+            </li>
+            {% if 'user_id' in session %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+    <div class="error-container">
+        <img src="{{ url_for('static', filename='imagens/404.png') }}" alt="erro 404">
+        <a href="{{url_for('index')}}">Voltar à página inicial</a>
+    </div>
+    {% block footer %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}
